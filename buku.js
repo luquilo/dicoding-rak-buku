@@ -2,7 +2,8 @@ const localStorageKey = 'books'
 
 let books = []
 const inputBookForm = document.getElementById('inputBook')
-const deleteBook = document.querySelector('#deleteBook')
+const deleteBook1 = document.querySelector('#deleteBook')
+const deleteBook2 = document.querySelector('#deleteBook2')
 const tandaiSelesai = document.getElementById('tandaiSelesai')
 const tandaiBelumSelesai = document.getElementById('tandaiBelumSelesai')
 
@@ -11,8 +12,13 @@ function clearLocalStorage() {
     localStorage.clear();
 }
 
-// function menghapus buku dari local storage
-deleteBook.addEventListener('click', function(){
+// function menghapus buku dari rak belum selesai
+deleteBook1.addEventListener('click', function(){
+    console.log('buku dihapus!')
+})
+
+// function menghapus buku dari rak selesai
+deleteBook2.addEventListener('click', function(){
     console.log('buku dihapus!')
 })
 
@@ -26,8 +32,17 @@ tandaiBelumSelesai.addEventListener('click', function(){
     console.log('buku ditandai belum selesai!')
 })
 
+//mengecek apakah support local storage atau tidak
+function isStorageExist() {
+    if (typeof Storage === undefined) {
+      alert("Maaf browser anda tidak support local storage");
+      return false;
+    }
+  
+    return true;
+}
 
-
+// function jika form di submit
 inputBookForm.addEventListener('submit', function(event){
     event.preventDefault();   
 
@@ -51,7 +66,17 @@ inputBookForm.addEventListener('submit', function(event){
     books.push(newBook)
 
     console.log(books)
-    localStorage.setItem()
+
+
+    // saving books to local storage
+    function saveDataToLocalStorage() {}{
+    if(isStorageExist()){
+        const parsedBook = JSON.stringify(books)
+        localStorage.setItem(localStorageKey, parsedBook)
+    }
+
+    saveDataToLocalStorage()
+}
 
 
     // membersihkan form
@@ -61,30 +86,16 @@ inputBookForm.addEventListener('submit', function(event){
     inputBookIsComplete.checked = false 
 
 
+
+
+
     // alert terimakasih
     alert('terimakasih telah mengisi formulir!')
 
     // console.log(`${id} ${judul} ${penulis} ${tahun} ${isComplete}`)
 })
 
-//mengecek apakah support local storage atau tidak
-function isStorageExist() {
-    if (typeof Storage === undefined) {
-      alert("Maaf browser anda tidak support local storage");
-      return false;
-    }
-  
-    return true;
-}
 
-
-// saving books to local storage
-function saveData(){
-    if(isStorageExist()){
-        const parsedBook = JSON.stringify(books)
-        localStorage.setItem(localStorageKey, parsedBook)
-    }
-}
 
 
 
