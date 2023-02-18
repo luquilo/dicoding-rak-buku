@@ -20,7 +20,6 @@ if(localStorage.getItem(localStorageKey) === null){
 }
 
 let books = JSON.parse(localStorage.getItem(localStorageKey))
-
 console.log(books)
 
 // menghapus semua local storage
@@ -29,14 +28,13 @@ function clearLocalStorage() {
 }
 
 // function me render buku di rak selesai
-function renderUncompleteBooks(){
+function renderUncompletedBooks(){
     const rawLocalBooks = localStorage.getItem(localStorageKey)
     const localBooks = JSON.parse(rawLocalBooks)
 
-    const filteredUncompletedBooks = localBooks.filter(book => book.isComplete === true)
+    // mem-filter buku yang belum complete
+    const filteredUncompletedBooks = localBooks.filter(book => book.isComplete === false)
 
-    console.log(localBooks)
-    console.log(filteredUncompletedBooks)
     // map dari localStorage
     const renderUncompletedBooks = filteredUncompletedBooks.map(book => {
         
@@ -59,18 +57,17 @@ function renderUncompleteBooks(){
 
 }
 
-const unCompleteBookshelfList = document.querySelector('#unCompleteBookshelfList')
-unCompleteBookshelfList.innerHTML = renderUncompleteBooks()
+// invoke render
+const unCompleteBookshelfList = document.getElementById('unCompleteBookshelfList')
+unCompleteBookshelfList.innerHTML = renderUncompletedBooks()
 
 // function me render buku di rak selesai
 function renderCompleteBooks(){
     const rawLocalBooks = localStorage.getItem(localStorageKey)
     const localBooks = JSON.parse(rawLocalBooks)
 
-    const filteredCompletedBooks = localBooks.filter(book => book.isComplete === false)
+    const filteredCompletedBooks = localBooks.filter(book => book.isComplete === true)
 
-    console.log(localBooks)
-    console.log(filteredCompletedBooks)
     // map dari localStorage
     const renderCompletedBooks = filteredCompletedBooks.map(book => {
         
@@ -98,11 +95,15 @@ completeBookshelfList.innerHTML = renderCompleteBooks()
 
 
 
-// selector
+// delete selector, returning an html collection
 const deleteButtons = document.querySelectorAll('.red')
 
 function removeBook(bookId){
     console.log(bookId)
+    // retrieve books localStorage
+    const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
+    console.log(localBooks)
+
 }
 
 // function menghapus buku
