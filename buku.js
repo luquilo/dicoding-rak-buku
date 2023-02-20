@@ -12,7 +12,7 @@ const initialDummyData = [{
     title: 'judul buku',
     author: 'author 1',
     year: 2003,
-    isComplete: true,
+    isComplete: true
 }]
 
 if(localStorage.getItem(localStorageKey) === null){
@@ -95,8 +95,21 @@ completeBookshelfList.innerHTML = renderCompleteBooks()
 // delete selector, returning an html collection
 const redButtons = document.querySelectorAll('.red')
 
-// function memindah buku
-function removeBook(event){
+// function menghapus buku
+
+
+// function menghapus buku
+redButtons.forEach(button => {
+    button.addEventListener('click', function(){
+        console.log('halo')
+    })
+})
+
+// green button selector, returning an html collection
+const greenButtons = document.querySelectorAll('.green')
+
+// function merubah status isComplete
+function changeBookStatus(event){
     const data_id = event.getAttribute('data-id')
 
     const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
@@ -107,18 +120,10 @@ function removeBook(event){
     location.reload()   
 }
 
-// function menghapus buku
-redButtons.forEach(button => {
-    
-})
-
-// green button selector, returning an html collection
-const greenButtons = document.querySelectorAll('.green')
-
 // mengganti status isComplete
 greenButtons.forEach(button => {
     button.addEventListener('click', function(){
-        removeBook(button)
+        changeBookStatus(button)
     })
 })
 
@@ -154,14 +159,15 @@ inputBookForm.addEventListener('submit', function(event){
         }
     }
 
-    const newBook = generateBookObject()
-    books.push(newBook)
+    const localBooks = JSON.parse(localStorage.getItem('books'))
 
-    localStorage.setItem(localStorageKey, JSON.stringify(books))
+    const newBook = generateBookObject()
+    localBooks.push(newBook)
+
+    localStorage.setItem(localStorageKey, JSON.stringify(localBooks))
     
     // updating the books array berdasarkan local storage
-    books = JSON.parse(localStorage.getItem(localStorageKey))
-    console.log(books)
+    
 
 
     // // membersihkan form
