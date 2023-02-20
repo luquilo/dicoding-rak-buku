@@ -1,10 +1,11 @@
-//mengecek apakah support local storage atau tidak
-function isStorageExist() {
+//mengecek apakah web browser meng-support local storage atau tidak
+function isLocalstorageExist() {
     if (typeof Storage === undefined) {
       alert("Maaf browser anda tidak support local storage");
     }
 }
-isStorageExist()
+isLocalstorageExist()
+
 
 const localStorageKey = 'books'
 const initialDummyData = [{
@@ -96,12 +97,26 @@ completeBookshelfList.innerHTML = renderCompleteBooks()
 const redButtons = document.querySelectorAll('.red')
 
 // function menghapus buku
+function deleteBook(event){
+    // data_id memiliki tipe data string
+    const data_id = event.getAttribute('data-id')
 
+    const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
+
+    // using filter method that return a new array
+    const updatedLocalBooks = localBooks.filter(book => book.id !== Number(data_id))
+    console.log(updatedLocalBooks)
+    // update the localStorage and set it to the new array
+    localStorage.setItem(localStorageKey, JSON.stringify(updatedLocalBooks))
+
+    // refresh the web to see the progress of deleting a book
+    location.reload()
+}
 
 // function menghapus buku
 redButtons.forEach(button => {
     button.addEventListener('click', function(){
-        console.log('halo')
+        deleteBook(button)
     })
 })
 
@@ -113,10 +128,12 @@ function changeBookStatus(event){
     const data_id = event.getAttribute('data-id')
 
     const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
-    const bookIndex = localBooks.findIndex(book => book.id == data_id)
-    localBooks[bookIndex].isComplete = !localBooks[bookIndex].isComplete
+    const bookTarget = localBooks.findIndex(book => book.id == data_id)
+    localBooks[bookTarget].isComplete = !localBooks[bookTarget].isComplete
     console.log(localBooks)
     localStorage.setItem(localStorageKey, JSON.stringify(localBooks))
+    
+    // refresh web biar kelihatan dampaknya
     location.reload()   
 }
 
