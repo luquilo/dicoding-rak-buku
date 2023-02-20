@@ -2,9 +2,9 @@
 function isStorageExist() {
     if (typeof Storage === undefined) {
       alert("Maaf browser anda tidak support local storage");
-      return false;
     }
 }
+isStorageExist()
 
 const localStorageKey = 'books'
 const initialDummyData = [{
@@ -19,8 +19,6 @@ if(localStorage.getItem(localStorageKey) === null){
     localStorage.setItem(localStorageKey, JSON.stringify(initialDummyData))
 }
 
-let books = JSON.parse(localStorage.getItem(localStorageKey))
-console.log(books)
 
 // menghapus semua local storage
 function clearLocalStorage() {
@@ -29,8 +27,7 @@ function clearLocalStorage() {
 
 // function me render buku di rak selesai
 function renderUncompletedBooks(){
-    const rawLocalBooks = localStorage.getItem(localStorageKey)
-    const localBooks = JSON.parse(rawLocalBooks)
+    const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
 
     // mem-filter buku yang belum complete
     const filteredUncompletedBooks = localBooks.filter(book => book.isComplete === false)
@@ -45,8 +42,8 @@ function renderUncompletedBooks(){
                 <p>Tahun: ${book.year}</p>
            
                 <div class="action">
-                  <button class="green ${book.id}">pindah rak</button>
-                  <button class="red" id='${book.id}'>Hapus buku</button>
+                  <button class="green" data-id='${book.id}'>pindah rak</button>
+                  <button class="red" data-id='${book.id}'>Hapus buku</button>
                 </div>
             </article>
         `
@@ -63,8 +60,8 @@ unCompleteBookshelfList.innerHTML = renderUncompletedBooks()
 
 // function me render buku di rak selesai
 function renderCompleteBooks(){
-    const rawLocalBooks = localStorage.getItem(localStorageKey)
-    const localBooks = JSON.parse(rawLocalBooks)
+    // ngambil data dari local storage
+    const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
 
     const filteredCompletedBooks = localBooks.filter(book => book.isComplete === true)
 
@@ -78,8 +75,8 @@ function renderCompleteBooks(){
                 <p>Tahun: ${book.year}</p>
            
                 <div class="action">
-                  <button class="green ${book.id}">pindah rak</button>
-                  <button class="red" id='${book.id}'>Hapus buku</button>
+                  <button class="green" data-id='${book.id}' >pindah rak</button>
+                  <button class="red" data-id='${book.id}'>Hapus buku</button>
                 </div>
             </article>
         `
@@ -90,36 +87,40 @@ function renderCompleteBooks(){
 
 }
 
-const completeBookshelfList = document.querySelector('#completeBookshelfList')
+const completeBookshelfList = document.getElementById('completeBookshelfList')
 completeBookshelfList.innerHTML = renderCompleteBooks()
 
 
 
 // delete selector, returning an html collection
-const deleteButtons = document.querySelectorAll('.red')
+const redButtons = document.querySelectorAll('.red')
 
-function removeBook(bookId){
-    console.log(bookId)
-    // retrieve books localStorage
+// function memindah buku
+function removeBook(event){
+    const data_id = event.getAttribute('data-id')
+
     const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
+    const bookIndex = localBooks.findIndex(book => book.id == data_id)
+    localBooks[bookIndex].isComplete = !localBooks[bookIndex].isComplete
     console.log(localBooks)
-
+    localStorage.setItem(localStorageKey, JSON.stringify(localBooks))
+    location.reload()   
 }
 
 // function menghapus buku
-deleteButtons.forEach(button => {
-    button.addEventListener('click', function(){
-        console.log(button)
-        removeBook(button.id)
-    })
+redButtons.forEach(button => {
+    
 })
 
+// green button selector, returning an html collection
+const greenButtons = document.querySelectorAll('.green')
 
-
-// // function menghapus buku dari rak selesai
-// deleteBook2.addEventListener('click', function(){
-//     console.log('buku dihapus!')
-// })
+// mengganti status isComplete
+greenButtons.forEach(button => {
+    button.addEventListener('click', function(){
+        removeBook(button)
+    })
+})
 
 // // function tandai buku telah selesai
 // tandaiSelesai.addEventListener('click', function(){
@@ -129,7 +130,7 @@ deleteButtons.forEach(button => {
 // // function tandai buku belum selesai
 // tandaiBelumSelesai.addEventListener('click', function(){
 //     console.log('buku ditandai belum selesai!')
-// })
+// }    )
 
 // form selector
 const inputBookForm = document.getElementById('inputBook')
