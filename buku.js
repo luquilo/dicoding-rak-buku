@@ -20,12 +20,6 @@ if(localStorage.getItem(localStorageKey) === null){
     localStorage.setItem(localStorageKey, JSON.stringify(initialDummyData))
 }
 
-
-// menghapus semua local storage
-function clearLocalStorage() {
-    localStorage.clear();
-}
-
 // function me render buku di rak selesai
 function renderUncompletedBooks(){
     const localBooks = JSON.parse(localStorage.getItem(localStorageKey))
