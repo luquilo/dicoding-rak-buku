@@ -144,21 +144,10 @@ greenButtons.forEach(button => {
     })
 })
 
-// // function tandai buku telah selesai
-// tandaiSelesai.addEventListener('click', function(){
-//     console.log('buku ditandai selesai!')
-// })
-
-// // function tandai buku belum selesai
-// tandaiBelumSelesai.addEventListener('click', function(){
-//     console.log('buku ditandai belum selesai!')
-// }    )
-
 // form selector
 const inputBookForm = document.getElementById('inputBook')
 // function jika form di submit
 inputBookForm.addEventListener('submit', function(event){
-    // event.preventDefault();   
 
     const id = +new Date();
     const title = document.getElementById('inputBookTitle').value
@@ -183,22 +172,8 @@ inputBookForm.addEventListener('submit', function(event){
 
     localStorage.setItem(localStorageKey, JSON.stringify(localBooks))
     
-    // updating the books array berdasarkan local storage
-    
-
-
-    // // membersihkan form
-    // inputBookTitle.value = ''
-    // inputBookAuthor.value = ''
-    // inputBookYear.value = ''
-    // inputBookIsComplete.checked = false 
-
-
-
-
-
     // alert terimakasih
-    alert('terimakasih telah mengisi formulir!')
+    alert('terimakasih telah mengisi formulir buku!')
 })
 
 
