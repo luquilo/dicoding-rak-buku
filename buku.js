@@ -11,9 +11,9 @@ const initialDummyData = [
   {
     id: 1010101010,
     title: "judul buku",
-    author: "author 1",
+    author: "muhammad luqmanul hakim",
     year: 2003,
-    isComplete: true,
+    isComplete: false,
   },
 ];
 
@@ -21,138 +21,115 @@ if (localStorage.getItem(localStorageKey) === null) {
   localStorage.setItem(localStorageKey, JSON.stringify(initialDummyData));
 }
 
-function renderAll() {
-  const searhBookTitle = document.getElementById('searchBookTitle').value
+const localBooks = JSON.parse(localStorage.getItem(localStorageKey));
+console.log(localBooks);
 
-  if (searhBookTitle.length > 0) {
-    
-      const searchBook = document.getElementById("searchBook");
+const searchBook = document.getElementById("searchBook");
+let bookTitle = "";
 
-      searchBook.addEventListener("submit", function (event) {
-      event.preventDefault();
-      console.log('leng lebih dari 0')
-      console.log("ada yang nyari buku");
-      console.log("ada yang submit di form pencarian");
+searchBook.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const searchBookTitle = document.getElementById("searchBookTitle").value;
+  bookTitle = searchBookTitle;
+  console.log(bookTitle);
 
-      const isSomeoneSearch = document.getElementById('searchBookTitle').value
-      console.log(isSomeoneSearch)
-      console.log(typeof isSomeoneSearch)
 
-      
-      function renderUncompletedBooks() {
-        const localBooks = JSON.parse(localStorage.getItem(localStorageKey));
-        const searchBookTitle = document.getElementById("searchBookTitle").value;
 
-        // mem-filter buku yang belum complete
-        const filteredUncompletedBooks = localBooks.filter(
-          (book) => book.isComplete === false
-        );
-        
-        const filteredBooks = filteredUncompletedBooks.filter(book => {
-            const title = book.title.toLowerCase()
-            const regex = new RegExp(searchBookTitle.toLowerCase(), 'g')
-            return title.match(regex)
-        })
 
-        // filter book that match the input
+  renderAll(bookTitle);
+});
 
-        // map dari localStorage
-        const renderUncompletedBooks = filteredBooks.map((book) => {
-          return `
-                      <article class='book_item'>
-                          <h3>${book.title}</h3>
-                          <p>Penulis: ${book.author}</p>
-                          <p>Tahun: ${book.year}</p>
-                     
-                          <div class="action">
-                            <button class="green" data-id='${book.id}'>pindah rak</button>
-                            <button class="red" data-id='${book.id}' title='${book.title}'>Hapus buku</button>
-                          </div>
-                      </article>
-                  `;
-        });
+function renderUncompletedBooks(title) {
+  let filteredUncompletedBooks;  
 
-        // const bookListHTML = bookElements.join('')
-        return renderUncompletedBooks;
-      }
+  const judul = title
+  const searchTitle = localBooks.filter(function (book){
+    return book.title.toLowerCase().includes(judul);
+  })
 
-      // invoke the render function
-      const unCompleteBookshelfList = document.getElementById(
-        "unCompleteBookshelfList"
-      );
-      unCompleteBookshelfList.innerHTML = renderUncompletedBooks();
-    });
-  } else {
-    // function me render buku di rak selesai
-    function renderUncompletedBooks() {
-      const localBooks = JSON.parse(localStorage.getItem(localStorageKey));
+  filteredUncompletedBooks = localBooks.filter(
+    (book) => book.isComplete === false
+  );
 
-      // mem-filter buku yang belum complete
-      const filteredUncompletedBooks = localBooks.filter(
-        (book) => book.isComplete === false
-      );
+  // map dari localStorage
+  const renderUncompletedBooks = filteredUncompletedBooks.map((book) => {
+    return `
+                <article class='book_item'>
+                    <h3>${book.title}</h3>
+                    <p>Penulis: ${book.author}</p>
+                    <p>Tahun: ${book.year}</p>
+               
+                    <div class="action">
+                      <button class="green" data-id='${book.id}'>pindah rak</button>
+                      <button class="red" data-id='${book.id}' title='${book.title}'>Hapus buku</button>
+                    </div>
+                </article>
+            `;
+  });
 
-      // map dari localStorage
-      const renderUncompletedBooks = filteredUncompletedBooks.map((book) => {
-        return `
-            <article class='book_item'>
-                <h3>${book.title}</h3>
-                <p>Penulis: ${book.author}</p>
-                <p>Tahun: ${book.year}</p>
-           
-                <div class="action">
-                  <button class="green" data-id='${book.id}'>pindah rak</button>
-                  <button class="red" data-id='${book.id}' title='${book.title}'>Hapus buku</button>
-                </div>
-            </article>
-        `;
-      });
+  return renderUncompletedBooks;
+}
 
-      // const bookListHTML = bookElements.join('')
-      return renderUncompletedBooks;
+function renderCompleteBooks(title) {
+  const filteredCompletedBooks = localBooks.filter(
+    (book) => book.isComplete === true
+  );
+
+  // map dari localStorage
+  const renderCompletedBooks = filteredCompletedBooks.map((book) => {
+    return `
+                <article class='book_item'>
+                    <h3>${book.title}</h3>
+                    <p>Penulis: ${book.author}</p>
+                    <p>Tahun: ${book.year}</p>
+               
+                    <div class="action">
+                      <button class="green" data-id='${book.id}' >pindah rak</button>
+                      <button class="red" data-id='${book.id}' title='${book.title}'>Hapus buku</button>
+                    </div>
+                </article>
+            `;
+  });
+
+  // const bookListHTML = bookElements.join('')
+  return renderCompletedBooks;
+}
+
+const unCompleteBookshelfList = document.getElementById("unCompleteBookshelfList");
+
+const completeBookshelfList = document.getElementById("completeBookshelfList");
+
+
+
+function renderAll(title = '') {
+  if (title.length <= 0) {
+    // jika search book title kosong, maka akan merender semua rak
+    // merender buku not complete
+    console.log("status : gak ada yang nyari buku");
+
+    // invoke rak falsy
+    unCompleteBookshelfList.innerHTML = renderUncompletedBooks(title);
+
+    // invoke rak buku truthy
+    completeBookshelfList.innerHTML = renderCompleteBooks(title);
+  } 
+  else
+  {
+    if(title == 'halo'){
+
+      unCompleteBookshelfList.innerHTML = renderUncompletedBooks(title)
+      completeBookshelfList.innerHTML = renderCompleteBooks(title)
+    }
+    else {
+      unCompleteBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+      completeBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
     }
 
-    // invoke render
-    const unCompleteBookshelfList = document.getElementById(
-      "unCompleteBookshelfList"
-    );
-    unCompleteBookshelfList.innerHTML = renderUncompletedBooks();
 
-    // function me render buku di rak selesai
-    function renderCompleteBooks() {
-      // ngambil data dari local storage
-      const localBooks = JSON.parse(localStorage.getItem(localStorageKey));
-
-      const filteredCompletedBooks = localBooks.filter(
-        (book) => book.isComplete === true
-      );
-
-      // map dari localStorage
-      const renderCompletedBooks = filteredCompletedBooks.map((book) => {
-        return `
-            <article class='book_item'>
-                <h3>${book.title}</h3>
-                <p>Penulis: ${book.author}</p>
-                <p>Tahun: ${book.year}</p>
-           
-                <div class="action">
-                  <button class="green" data-id='${book.id}' >pindah rak</button>
-                  <button class="red" data-id='${book.id}' title='${book.title}'>Hapus buku</button>
-                </div>
-            </article>
-        `;
-      });
-
-      // const bookListHTML = bookElements.join('')
-      return renderCompletedBooks;
-    }
-
-    const completeBookshelfList = document.getElementById(
-      "completeBookshelfList"
-    );
-    completeBookshelfList.innerHTML = renderCompleteBooks();
+    console.log("status : ada yang nyari buku");
   }
 }
+
 
 renderAll();
 
