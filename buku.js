@@ -22,7 +22,6 @@ if (localStorage.getItem(localStorageKey) === null) {
 }
 
 const localBooks = JSON.parse(localStorage.getItem(localStorageKey));
-console.log(localBooks);
 
 const searchBook = document.getElementById("searchBook");
 let bookTitle = "";
@@ -31,9 +30,6 @@ searchBook.addEventListener("submit", function (event) {
   event.preventDefault();
   const searchBookTitle = document.getElementById("searchBookTitle").value;
   bookTitle = searchBookTitle;
-  console.log(bookTitle);
-
-
 
 
   renderAll(bookTitle);
@@ -42,10 +38,9 @@ searchBook.addEventListener("submit", function (event) {
 function renderUncompletedBooks(title) {
   let filteredUncompletedBooks;  
 
-  const judul = title
-  const searchTitle = localBooks.filter(function (book){
-    return book.title.toLowerCase().includes(judul);
-  })
+  // const searchTitle = localBooks.filter(function (book){
+  //   return book.title.toLowerCase().includes(judul);
+  // })
 
   filteredUncompletedBooks = localBooks.filter(
     (book) => book.isComplete === false
@@ -115,21 +110,40 @@ function renderAll(title = '') {
   } 
   else
   {
-    if(title == 'halo'){
+    const judul = title
 
-      unCompleteBookshelfList.innerHTML = renderUncompletedBooks(title)
-      completeBookshelfList.innerHTML = renderCompleteBooks(title)
+    // buku yang ditemukan
+    const foundBooks = []
+
+    for(let i = 0; i < localBooks.length; i++){
+      if(localBooks[i].title.toLowerCase().includes(judul.toLocaleLowerCase())){
+        foundBooks.push(localBooks[i])
+        unCompleteBookshelfList.innerHTML = renderUncompletedBooks(title);
+        completeBookshelfList.innerHTML = renderCompleteBooks(title);
+      }
+      else {
+        unCompleteBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+        completeBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+      }
     }
-    else {
-      unCompleteBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
-      completeBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
-    }
+
+    
+
+
+
+    // if(title == 'halo'){
+    //   unCompleteBookshelfList.innerHTML = renderUncompletedBooks(title)
+    //   completeBookshelfList.innerHTML = renderCompleteBooks(title)
+    // }
+    // else {
+    //   unCompleteBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+    //   completeBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+    // }
 
 
     console.log("status : ada yang nyari buku");
   }
 }
-
 
 renderAll();
 
