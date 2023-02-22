@@ -35,16 +35,18 @@ searchBook.addEventListener("submit", function (event) {
   renderAll(bookTitle);
 });
 
-function renderUncompletedBooks(title) {
-  let filteredUncompletedBooks;  
-
-  // const searchTitle = localBooks.filter(function (book){
-  //   return book.title.toLowerCase().includes(judul);
-  // })
-
-  filteredUncompletedBooks = localBooks.filter(
+function renderUncompletedBooks(foundBooks) {
+  
+  let filteredUncompletedBooks = localBooks.filter(
     (book) => book.isComplete === false
-  );
+  )
+
+  if(foundBooks.length > 0){
+    filteredUncompletedBooks = foundBooks.filter(
+      (book) => book.isComplete === false
+    )
+  }
+
 
   // map dari localStorage
   const renderUncompletedBooks = filteredUncompletedBooks.map((book) => {
@@ -65,10 +67,17 @@ function renderUncompletedBooks(title) {
   return renderUncompletedBooks;
 }
 
-function renderCompleteBooks(title) {
-  const filteredCompletedBooks = localBooks.filter(
+function renderCompleteBooks(foundBooks) {
+
+  let filteredCompletedBooks = localBooks.filter(
     (book) => book.isComplete === true
   );
+
+  if(foundBooks.length > 0){
+    filteredCompletedBooks = foundBooks.filter(
+      (book) => book.isComplete === true
+    )
+  }
 
   // map dari localStorage
   const renderCompletedBooks = filteredCompletedBooks.map((book) => {
@@ -100,7 +109,6 @@ function renderAll(title = '') {
   if (title.length <= 0) {
     // jika search book title kosong, maka akan merender semua rak
     // merender buku not complete
-    console.log("status : gak ada yang nyari buku");
 
     // invoke rak falsy
     unCompleteBookshelfList.innerHTML = renderUncompletedBooks(title);
@@ -117,15 +125,20 @@ function renderAll(title = '') {
 
     for(let i = 0; i < localBooks.length; i++){
       if(localBooks[i].title.toLowerCase().includes(judul.toLocaleLowerCase())){
-        foundBooks.push(localBooks[i])
-        unCompleteBookshelfList.innerHTML = renderUncompletedBooks(title);
-        completeBookshelfList.innerHTML = renderCompleteBooks(title);
-      }
-      else {
-        unCompleteBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
-        completeBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+        foundBooks.push(localBooks[i])   
       }
     }
+
+    if(foundBooks.length <= 0 ){
+      unCompleteBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+      completeBookshelfList.innerHTML = `mohon maaf, buku yang berjudul "${title}" tidak ditemukan`
+    }
+
+    if(foundBooks.length > 0){
+        unCompleteBookshelfList.innerHTML = renderUncompletedBooks(foundBooks);
+        completeBookshelfList.innerHTML = renderCompleteBooks(foundBooks);
+    }
+
 
     
 
@@ -141,7 +154,6 @@ function renderAll(title = '') {
     // }
 
 
-    console.log("status : ada yang nyari buku");
   }
 }
 
@@ -164,7 +176,6 @@ function deleteBook(event) {
   );
   // update the localStorage and set it to the new array
   localStorage.setItem(localStorageKey, JSON.stringify(updatedLocalBooks));
-  console.log(event);
   // notifikasi bahwa buku telah dihapus
   alert(`anda telah menghapus buku berjudul "${bookTitle}"`);
 
@@ -189,7 +200,6 @@ function changeBookStatus(event) {
   const localBooks = JSON.parse(localStorage.getItem(localStorageKey));
   const bookTarget = localBooks.findIndex((book) => book.id == data_id);
   localBooks[bookTarget].isComplete = !localBooks[bookTarget].isComplete;
-  console.log(localBooks);
   localStorage.setItem(localStorageKey, JSON.stringify(localBooks));
 
   // refresh web biar kelihatan dampaknya
